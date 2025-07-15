@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบบันทึกข้อมูลผู้พิการรายใหม่</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun for Thai -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .form-container, .table-container {
+            background-color: white; padding: 2rem; border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .table-container { margin-top: 2rem; }
+        .btn {
+            color: white; transition: background-color 0.3s ease; font-weight: 600;
+            padding: 0.5rem 1.5rem; border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); cursor: pointer;
+        }
+        .btn-sm { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
+        .btn-primary { background-color: #4f46e5; }
+        .btn-primary:hover { background-color: #4338ca; }
+        .btn-success { background-color: #16a34a; }
+        .btn-success:hover { background-color: #15803d; }
+        .btn-warning { background-color: #f59e0b; }
+        .btn-warning:hover { background-color: #d97706; }
+        .btn-danger { background-color: #dc2626; }
+        .btn-danger:hover { background-color: #b91c1c; }
+        th { background-color: #f3f4f6; }
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe; margin: auto; padding: 2rem; border: 1px solid #888;
+            width: 90%; max-width: 600px; border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;
+        }
+        .close-button { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-button:hover, .close-button:focus { color: black; }
+        .image-preview, .edit-image-preview { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .image-preview img, .edit-image-preview img { height: 60px; width: 60px; object-fit: cover; border-radius: 0.25rem; }
+    </style>
+</head>
+<body class="bg-gray-50 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Main Title -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">แบบบันทึกข้อมูลผู้พิการรายใหม่</h1>
+            <p class="text-gray-500 mt-2">กรอกข้อมูลในแบบฟอร์มด้านล่างเพื่อเพิ่มข้อมูลใหม่</p>
+        </header>
+
+        <!-- Form Section -->
+        <div class="form-container">
+            <form id="data-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="disabled-name" class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้พิการ</label>
+                        <input type="text" id="disabled-name" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="guardian-name" class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้ปกครอง</label>
+                        <input type="text" id="guardian-name" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่</label>
+                        <textarea id="address" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">เบอร์โทรผู้ปกครอง</label>
+                        <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                     <div>
+                        <label for="teacher-name" class="block text-sm font-medium text-gray-700 mb-1">ครูผู้กรอกข้อมูล</label>
+                        <input type="text" id="teacher-name" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ</label>
+                        <textarea id="remarks" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">แนบภาพประกอบ (1 ภาพ)</label>
+                        <input type="file" name="images" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                </div>
+                <div class="mt-8 text-right">
+                    <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="table-container">
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <h2 class="text-2xl font-bold text-gray-800">รายการข้อมูลที่บันทึกไว้</h2>
+                <button id="download-word-btn" class="btn btn-success">ดาวน์โหลด Word (.doc)</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200" id="data-table">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ที่</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ชื่อผู้พิการ</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ชื่อผู้ปกครอง</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ที่อยู่</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">เบอร์โทร</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ครูผู้กรอก</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">วัน/เวลาที่บันทึก</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">หมายเหตุ</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">ภาพประกอบ</th>
+                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase action-column">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                         <tr id="no-data-row">
+                            <td colspan="10" class="px-6 py-4 text-center text-gray-500">ยังไม่มีข้อมูล</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-gray-800">แก้ไขข้อมูล</h2>
+                <span class="close-button" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="edit-form" class="mt-4">
+                <div class="space-y-4">
+                    <!-- Fields will be populated by JS -->
+                    <div><label class="block text-sm font-medium">ชื่อผู้พิการ</label><input type="text" id="edit-disabled-name" required class="w-full mt-1 p-2 border rounded-md"></div>
+                    <div><label class="block text-sm font-medium">ชื่อผู้ปกครอง</label><input type="text" id="edit-guardian-name" required class="w-full mt-1 p-2 border rounded-md"></div>
+                    <div><label class="block text-sm font-medium">ที่อยู่</label><textarea id="edit-address" rows="3" required class="w-full mt-1 p-2 border rounded-md"></textarea></div>
+                    <div><label class="block text-sm font-medium">เบอร์โทรผู้ปกครอง</label><input type="tel" id="edit-phone" required class="w-full mt-1 p-2 border rounded-md"></div>
+                    <div><label class="block text-sm font-medium">ครูผู้กรอกข้อมูล</label><input type="text" id="edit-teacher-name" required class="w-full mt-1 p-2 border rounded-md"></div>
+                    <div><label class="block text-sm font-medium">หมายเหตุ</label><textarea id="edit-remarks" rows="2" class="w-full mt-1 p-2 border rounded-md"></textarea></div>
+                    <div>
+                        <label class="block text-sm font-medium">แก้ไขภาพประกอบ</label>
+                        <div id="edit-image-container" class="mt-2 space-y-2"></div>
+                    </div>
+                </div>
+                <div class="mt-6 text-right space-x-3">
+                    <button type="button" class="btn bg-gray-500 hover:bg-gray-600" onclick="closeModal()">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const form = document.getElementById('data-form');
+        const tableBody = document.getElementById('table-body');
+        const noDataRow = document.getElementById('no-data-row');
+        const downloadWordBtn = document.getElementById('download-word-btn');
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+        let recordCounter = 0;
+        let currentRowBeingEdited = null;
+
+        // Event listener for form submission
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (noDataRow) noDataRow.style.display = 'none';
+
+            recordCounter++;
+            const newRow = tableBody.insertRow();
+            newRow.className = 'hover:bg-gray-50';
+
+            // Get current timestamp
+            const now = new Date();
+            const timestamp = now.toLocaleString('th-TH', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // Handle image upload
+            const imageInput = form.querySelector('input[name="images"]');
+            let imagePreview = '';
+            if (imageInput.files[0]) {
+                const imageURL = URL.createObjectURL(imageInput.files[0]);
+                imagePreview = `<img src="${imageURL}" class="h-12 w-12 object-cover rounded-md inline-block">`;
+            }
+
+            // Populate the new table row with data
+            newRow.innerHTML = `
+                <td class="px-4 py-2 text-sm align-top">${recordCounter}</td>
+                <td class="px-4 py-2 text-sm align-top">${document.getElementById('disabled-name').value}</td>
+                <td class="px-4 py-2 text-sm align-top">${document.getElementById('guardian-name').value}</td>
+                <td class="px-4 py-2 text-sm align-top break-words max-w-xs">${document.getElementById('address').value}</td>
+                <td class="px-4 py-2 text-sm align-top">${document.getElementById('phone').value}</td>
+                <td class="px-4 py-2 text-sm align-top">${document.getElementById('teacher-name').value}</td>
+                <td class="px-4 py-2 text-sm align-top">${timestamp}</td>
+                <td class="px-4 py-2 text-sm align-top break-words max-w-xs">${document.getElementById('remarks').value || '-'}</td>
+                <td class="px-4 py-2 text-sm align-top image-cell">${imagePreview || 'ไม่มีภาพ'}</td>
+                <td class="px-4 py-2 text-center align-top action-column">
+                    <button class="btn btn-sm btn-warning mb-2" onclick="editRow(this)">แก้ไข</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteRow(this)">ลบ</button>
+                </td>
+            `;
+            form.reset();
+        });
+
+        // Function to delete a table row
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            // Revoke Object URLs to prevent memory leaks
+            row.querySelectorAll('.image-cell img').forEach(img => URL.revokeObjectURL(img.src));
+            row.remove();
+            if (tableBody.rows.length === 0 && noDataRow) {
+                noDataRow.style.display = 'table-row';
+            }
+            // Renumber rows
+            Array.from(tableBody.rows).forEach((r, index) => {
+                if(r.id !== 'no-data-row') {
+                   r.cells[0].innerText = index + 1;
+                }
+            });
+            recordCounter = Array.from(tableBody.rows).filter(r => r.id !== 'no-data-row').length;
+        }
+
+        // Function to open the edit modal
+        function editRow(button) {
+            currentRowBeingEdited = button.closest('tr');
+            const cells = currentRowBeingEdited.cells;
+            
+            document.getElementById('edit-disabled-name').value = cells[1].innerText;
+            document.getElementById('edit-guardian-name').value = cells[2].innerText;
+            document.getElementById('edit-address').value = cells[3].innerText;
+            document.getElementById('edit-phone').value = cells[4].innerText;
+            document.getElementById('edit-teacher-name').value = cells[5].innerText;
+            document.getElementById('edit-remarks').value = cells[7].innerText === '-' ? '' : cells[7].innerText;
+
+            const imageContainer = document.getElementById('edit-image-container');
+            imageContainer.innerHTML = '';
+            const currentImage = cells[8].querySelector('img');
+            
+            const imgSrc = currentImage ? currentImage.src : '';
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <img src="${imgSrc}" class="h-12 w-12 object-cover rounded-md ${!imgSrc ? 'hidden' : ''}" id="edit-preview-0">
+                    <span class="text-gray-500 ${imgSrc ? 'hidden' : ''}" id="edit-placeholder-0">ไม่มีภาพ</span>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <input type="file" name="edit-image" accept="image/*" class="w-full text-sm file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" data-index="0">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteEditImage(this, 0)">ลบ</button>
+                </div>
+            `;
+            imageContainer.appendChild(div);
+            
+            imageContainer.querySelector('input[type="file"]').addEventListener('change', (e) => {
+                const preview = document.getElementById(`edit-preview-0`);
+                const placeholder = document.getElementById(`edit-placeholder-0`);
+                if (e.target.files[0]) {
+                    // Revoke old blob url before creating new one
+                    if (preview.src.startsWith('blob:')) {
+                        URL.revokeObjectURL(preview.src);
+                    }
+                    preview.src = URL.createObjectURL(e.target.files[0]);
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                }
+            });
+
+            editModal.style.display = 'flex';
+        }
+        
+        // **NEW** Function to delete an image in the edit modal
+        function deleteEditImage(button, index) {
+            const container = button.closest('.flex');
+            const fileInput = container.querySelector('input[type="file"]');
+            const preview = document.getElementById(`edit-preview-${index}`);
+            const placeholder = document.getElementById(`edit-placeholder-${index}`);
+
+            // Clear the file input
+            fileInput.value = '';
+
+            // Hide the preview image and show the placeholder
+            if (preview) {
+                // Revoke the old blob URL if it exists to prevent memory leaks
+                if (preview.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(preview.src);
+                }
+                preview.src = '';
+                preview.classList.add('hidden');
+            }
+            if (placeholder) {
+                placeholder.classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            editModal.style.display = 'none';
+            currentRowBeingEdited = null;
+        }
+
+        editForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (!currentRowBeingEdited) return;
+
+            const cells = currentRowBeingEdited.cells;
+            cells[1].innerText = document.getElementById('edit-disabled-name').value;
+            cells[2].innerText = document.getElementById('edit-guardian-name').value;
+            cells[3].innerText = document.getElementById('edit-address').value;
+            cells[4].innerText = document.getElementById('edit-phone').value;
+            cells[5].innerText = document.getElementById('edit-teacher-name').value;
+            cells[7].innerText = document.getElementById('edit-remarks').value || '-';
+            
+            const imageCell = cells[8];
+            const editImageInput = document.querySelector('input[name="edit-image"]');
+            const currentImgPreview = document.getElementById('edit-preview-0');
+            
+            // Clear previous image and its blob URL
+            const oldImg = imageCell.querySelector('img');
+            if(oldImg && oldImg.src.startsWith('blob:')) {
+                URL.revokeObjectURL(oldImg.src);
+            }
+            imageCell.innerHTML = ''; 
+            
+            let hasImage = false;
+
+            if (editImageInput.files[0]) { // New file selected
+                const newImg = document.createElement('img');
+                newImg.src = URL.createObjectURL(editImageInput.files[0]);
+                newImg.className = 'h-12 w-12 object-cover rounded-md inline-block';
+                imageCell.appendChild(newImg);
+                hasImage = true;
+            } else if (currentImgPreview && currentImgPreview.src && !currentImgPreview.classList.contains('hidden')) { // Existing image kept
+                const existingImg = document.createElement('img');
+                existingImg.src = currentImgPreview.src;
+                existingImg.className = 'h-12 w-12 object-cover rounded-md inline-block';
+                imageCell.appendChild(existingImg);
+                hasImage = true;
+            }
+            
+            if (!hasImage) {
+                imageCell.innerText = 'ไม่มีภาพ';
+            }
+
+            closeModal();
+        });
+        
+        window.onclick = (event) => { if (event.target == editModal) closeModal(); };
+
+        function toBase64(blobUrl) {
+            return new Promise((resolve, reject) => {
+                if (!blobUrl) {
+                    reject(new Error("Blob URL is null or empty"));
+                    return;
+                }
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', blobUrl, true);
+                xhr.responseType = 'blob';
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = (err) => reject(err);
+                        reader.readAsDataURL(this.response);
+                    } else {
+                        reject(new Error(`Failed to fetch blob with status: ${this.status}`));
+                    }
+                };
+                xhr.onerror = (err) => reject(err);
+                xhr.send();
+            });
+        }
+
+        downloadWordBtn.addEventListener('click', async function() {
+            if (tableBody.rows.length === 0 || (tableBody.rows.length === 1 && tableBody.contains(noDataRow))) {
+                alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+                return;
+            }
+
+            const table = document.getElementById('data-table').cloneNode(true);
+            const actionColumnIndex = Array.from(table.querySelectorAll('thead th')).findIndex(th => th.classList.contains('action-column'));
+
+            if (actionColumnIndex > -1) {
+                table.querySelector('thead tr').deleteCell(actionColumnIndex);
+                Array.from(table.querySelectorAll('tbody tr')).forEach(row => {
+                    if (row.id !== 'no-data-row' && row.cells.length > actionColumnIndex) {
+                        row.deleteCell(actionColumnIndex);
+                    }
+                });
+            }
+            
+            const imageElements = table.querySelectorAll('.image-cell img');
+            for (const img of imageElements) {
+                if (img.src.startsWith('blob:')) {
+                    try {
+                        const base64Src = await toBase64(img.src);
+                        img.src = base64Src;
+                    } catch (error) {
+                        console.error("Error converting image to Base64:", error);
+                        img.alt = "ไม่สามารถโหลดภาพได้";
+                    }
+                }
+            }
+
+            const htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>รายการข้อมูลผู้พิการ</title>
+                <style>
+                    @page { 
+                        size: landscape;
+                        margin: 1in; 
+                    } 
+                    body { font-family: 'Sarabun', 'Cordia New', sans-serif; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; vertical-align: top; word-wrap: break-word; }
+                    th { background-color: #f2f2f2; }
+                    /* Image styling for Word export */
+                    td.image-cell img {
+                        max-width: 250px; /* Limit image width */
+                        width: 100%;
+                        height: auto;     /* Maintain aspect ratio */
+                    }
+                </style>
+                </head><body><h2>รายการข้อมูลผู้พิการ</h2>${table.outerHTML}</body></html>`;
+
+            // Create a Blob and trigger the download for .doc
+            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'disabled-data-report.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
